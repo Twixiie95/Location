@@ -46,6 +46,9 @@ td.num, th.num { text-align: right; white-space: nowrap; }
 .pay-due { background: #fef3c7; color: #92400e; }
 .pay-late { background: #fee2e2; color: #991b1b; }
 .pay-title { margin: 12px 0 0; font-size: .95rem; }
+.recovery-bar { height: 8px; border-radius: 4px; background: #e5e7eb; margin: 6px 0; overflow: hidden; }
+.recovery-bar div { height: 100%; background: var(--ok); }
+.recovery-bar.full div { background: var(--solo); }
 .balance { background: #f8f9fb; border-radius: 6px; padding: 8px 12px; font-size: 14px; }
 .balance div { padding: 2px 0; }
 .due { color: var(--danger); font-weight: 600; }

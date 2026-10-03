@@ -275,6 +275,28 @@ function finesHtml(v) {
       <button class="primary small" data-act="add-fine" data-v="${v.id}">+ Ajouter une amende</button>`;
 }
 
+// Suivi du remboursement du véhicule : revenus des locations moins frais et assurance, comparés au prix d'achat.
+function recoveryInfo(v) {
+  const price = v.purchasePrice || 0;
+  const income = rentals.filter((r) => r.vehicleId === v.id).reduce((s, r) => s + revenue(r), 0);
+  const costs = compute(v).total;
+  const net = income - costs;
+  const remaining = Math.max(0, price - net);
+  const percent = price > 0 ? Math.min(100, Math.max(0, (net / price) * 100)) : 0;
+  return { price, income, costs, net, remaining, percent, recovered: price > 0 && net >= price - 0.005 };
+}
+
+function recoveryHtml(v) {
+  if (!v.purchasePrice) return '';
+  const r = recoveryInfo(v);
+  if (r.recovered) {
+    return `<div class="pay-title"><strong>Véhicule remboursé</strong> · ${money(r.price)} d'achat couverts (net généré : ${money(r.net)})</div>`;
+  }
+  return `<h4 class="pay-title">Remboursement du véhicule</h4>
+      <div>Prix d'achat : ${money(r.price)} · Net généré jusqu'ici : ${money(r.net)} (${r.percent.toFixed(0)} %) · Reste à récupérer : <span class="due">${money(r.remaining)}</span></div>
+      <div class="recovery-bar"><div style="width:${r.percent}%"></div></div>`;
+}
+
 function insuranceText(v) {
   if (!v.insurance || !v.insurance.amount) return '';
   const n = periodsCount({ period: 'mois', start: v.insurance.start });
@@ -310,6 +332,7 @@ function vehicleCardHtml(v) {
         </div>
         <div><strong>${money(c.total)}</strong> <span class="muted">de frais</span></div>
       </div>
+      ${recoveryHtml(v)}
       <h4 class="pay-title">Frais</h4>
       ${feesTableHtml(v, `data-v="${v.id}"`)}
       <div class="balance">${balance}</div>
@@ -651,7 +674,7 @@ function renderVehicles() {
       <div>
         <strong>${esc(v.name)}</strong>${v.plate ? ' · ' + esc(v.plate) : ''}
         <span class="badge ${v.type}">${v.type === 'ali' ? 'Avec Ali · ' + v.share + ' %' : 'Seul'}</span>
-        <div class="muted">${count} location${count > 1 ? 's' : ''}${v.insurance && v.insurance.amount ? ` · assurance ${money(v.insurance.amount)}/mois (${payerLabel(v.insurance.payer)})` : ''}</div>
+        <div class="muted">${count} location${count > 1 ? 's' : ''}${v.insurance && v.insurance.amount ? ` · assurance ${money(v.insurance.amount)}/mois (${payerLabel(v.insurance.payer)})` : ''}${v.purchasePrice ? ` · achat ${money(v.purchasePrice)}${recoveryInfo(v).recovered ? ' (remboursé)' : ''}` : ''}</div>
       </div>
       <div class="btns">
         <button class="small" data-vact="edit" data-v="${v.id}">Modifier</button>
@@ -694,6 +717,7 @@ $('#vehicle-list').addEventListener('click', (e) => {
     editingVehicleId = v.id;
     formVehicle.name.value = v.name;
     formVehicle.plate.value = v.plate || '';
+    formVehicle.purchasePrice.value = v.purchasePrice || '';
     formVehicle.type.value = v.type;
     formVehicle.share.value = v.share ?? 50;
     formVehicle.insuranceAmount.value = v.insurance ? v.insurance.amount : '';
@@ -719,6 +743,7 @@ formVehicle.addEventListener('submit', (e) => {
   const data = {
     name: formVehicle.name.value.trim(),
     plate: formVehicle.plate.value.trim(),
+    purchasePrice: parseFloat(formVehicle.purchasePrice.value) || 0,
     type,
     share: type === 'ali' ? Math.min(100, Math.max(0, parseFloat(formVehicle.share.value) || 0)) : 100,
     insurance: insuranceAmount > 0 ? {
