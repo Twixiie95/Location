@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Suivi des locations</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Suivi des locations</h1>
+    <div class="actions">
+      <button id="btn-new-rental" class="primary">+ Nouvelle location</button>
+      <button id="btn-vehicles">Véhicules</button>
+      <button id="btn-export">Exporter</button>
+      <label class="button">Importer<input type="file" id="file-import" accept="application/json" hidden></label>
+    </div>
+  </header>
+
+  <nav id="tabs">
+    <button data-filter="all" class="active">Toutes</button>
+    <button data-filter="solo">Seul</button>
+    <button data-filter="ali">Avec Ali</button>
+  </nav>
+
+  <section id="summary"></section>
+  <section id="vehicles"></section>
+  <h2 id="rentals-title" class="section-title">Locations</h2>
+  <main id="rentals"></main>
+
+  <dialog id="dlg-rental">
+    <form method="dialog" id="form-rental">
+      <h2 id="rental-title">Nouvelle location</h2>
+      <label>Véhicule <select name="vehicleId" required></select></label>
+      <p id="rental-type" class="muted"></p>
+      <label>Client <input name="client" required></label>
+      <label>Téléphone <input type="tel" name="phone" placeholder="ex : 06 12 34 56 78"></label>
+      <div class="row">
+        <label>Début <input type="date" name="start" required></label>
+        <label>Type de location
+          <select name="period">
+            <option value="jour">Jour</option>
+            <option value="semaine">Semaine</option>
+            <option value="mois">Mois</option>
+          </select>
+        </label>
+      </div>
+      <label>Prix par période (€) <input type="number" name="price" step="0.01" min="0" required></label>
+      <label id="share-field" hidden>Ma part des frais et bénéfices (%)
+        <input type="number" name="share" min="0" max="100" value="50">
+      </label>
+      <menu>
+        <button type="button" class="cancel">Annuler</button>
+        <button type="submit" class="primary">Enregistrer</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-fee">
+    <form method="dialog" id="form-fee">
+      <h2 id="fee-title">Nouveau frais</h2>
+      <label>Description <input name="label" required placeholder="ex : carburant, réparation, péage"></label>
+      <div class="row">
+        <label>Montant (€) <input type="number" name="amount" step="0.01" min="0" required></label>
+        <label>Date <input type="date" name="date" required></label>
+      </div>
+      <label>Qui a payé ?
+        <select name="payer"></select>
+      </label>
+      <menu>
+        <button type="button" class="cancel">Annuler</button>
+        <button type="submit" class="primary">Enregistrer</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-pay">
+    <form method="dialog" id="form-pay">
+      <h2 id="pay-title">Enregistrer un paiement</h2>
+      <div class="row">
+        <label>Montant reçu (€) <input type="number" name="amount" step="0.01" min="0" required></label>
+        <label>Date de réception <input type="date" name="date" required></label>
+      </div>
+      <label>Note <input name="note" placeholder="ex : espèces, virement, chèque"></label>
+      <menu>
+        <button type="button" class="cancel">Annuler</button>
+        <button type="submit" class="primary">Enregistrer</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-fine">
+    <form method="dialog" id="form-fine">
+      <h2 id="fine-title">Nouvelle amende</h2>
+      <label>Date de l'infraction <input type="date" name="date" required></label>
+      <p id="fine-renter" class="muted"></p>
+      <div class="row">
+        <label>Montant (€) <input type="number" name="amount" step="0.01" min="0" required></label>
+        <label>Référence <input name="reference" placeholder="ex : n° de l'avis"></label>
+      </div>
+      <label>Note <input name="note" placeholder="ex : excès de vitesse, stationnement"></label>
+      <label>Statut
+        <select name="status">
+          <option value="pending">À traiter</option>
+          <option value="done">Traitée</option>
+        </select>
+      </label>
+      <menu>
+        <button type="button" class="cancel">Annuler</button>
+        <button type="submit" class="primary">Enregistrer</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-vehicles">
+    <h2>Véhicules</h2>
+    <div id="vehicle-list"></div>
+    <form id="form-vehicle">
+      <h3 id="vehicle-form-title">Ajouter un véhicule</h3>
+      <label>Nom <input name="name" required placeholder="ex : Toyota Yaris, Camion 1"></label>
+      <label>Immatriculation <input name="plate" placeholder="ex : AB-123-CD"></label>
+      <div class="row">
+        <label>Propriétaire
+          <select name="type">
+            <option value="solo">À moi seul</option>
+            <option value="ali">Avec Ali</option>
+          </select>
+        </label>
+        <label id="vehicle-share-field" hidden>Ma part (%)
+          <input type="number" name="share" min="0" max="100" value="50">
+        </label>
+      </div>
+      <h3>Assurance (mensuelle)</h3>
+      <div class="row">
+        <label>Montant par mois (€) <input type="number" name="insuranceAmount" step="0.01" min="0" placeholder="0 si aucune"></label>
+        <label>Depuis le <input type="date" name="insuranceStart"></label>
+      </div>
+      <label id="vehicle-insurance-payer-field" hidden>Payée par
+        <select name="insurancePayer">
+          <option value="moi">Moi</option>
+          <option value="ali">Ali</option>
+        </select>
+      </label>
+      <menu>
+        <button type="button" id="vehicle-cancel-edit" hidden>Annuler la modification</button>
+        <button type="submit" class="primary" id="vehicle-submit">Ajouter</button>
+      </menu>
+    </form>
+    <menu><button type="button" class="cancel">Fermer</button></menu>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

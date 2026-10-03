@@ -1,0 +1,68 @@
+:root {
+  --bg: #f4f5f7; --card: #fff; --text: #1f2430; --muted: #6b7280; --border: #dfe2e8;
+  --primary: #2563eb; --solo: #0d9488; --ali: #d97706; --danger: #dc2626; --ok: #16a34a;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.4 system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 0 16px 40px; }
+header, nav, section, main { max-width: 1000px; margin: 0 auto; }
+header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 20px 0 8px; }
+h1 { margin: 0; font-size: 1.5rem; }
+button, .button { font: inherit; padding: 7px 14px; border: 1px solid var(--border); background: var(--card); border-radius: 6px; cursor: pointer; display: inline-block; }
+button:hover, .button:hover { background: #eef0f4; }
+button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+button.primary:hover { background: #1d4ed8; }
+button.danger { color: var(--danger); }
+button.small { padding: 3px 9px; font-size: 13px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+nav { display: flex; gap: 8px; margin: 12px auto; }
+nav button.active { background: var(--text); color: #fff; border-color: var(--text); }
+
+#summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.stat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.stat .k { color: var(--muted); font-size: 13px; }
+.stat .v { font-size: 1.35rem; font-weight: 600; margin-top: 2px; }
+.stat.alert { border-color: var(--danger); }
+.stat.alert .v { color: var(--danger); }
+
+#vehicles h2, .section-title { font-size: 1.15rem; margin: 20px 0 10px; }
+.section-title { max-width: 1000px; margin-left: auto; margin-right: auto; }
+.card { background: var(--card); border: 1px solid var(--border); border-left: 5px solid var(--solo); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; }
+.card.ali { border-left-color: var(--ali); }
+.card-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card-head h3 { margin: 0 0 2px; font-size: 1.05rem; }
+.muted { color: var(--muted); font-size: 13px; }
+.badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; color: #fff; background: var(--solo); margin-left: 6px; vertical-align: middle; }
+.badge.ali { background: var(--ali); }
+
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 500; font-size: 13px; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+.table-wrap { overflow-x: auto; }
+
+.pay-badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-top: 4px; }
+.pay-ok { background: #dcfce7; color: #166534; }
+.pay-due { background: #fef3c7; color: #92400e; }
+.pay-late { background: #fee2e2; color: #991b1b; }
+.pay-title { margin: 12px 0 0; font-size: .95rem; }
+.balance { background: #f8f9fb; border-radius: 6px; padding: 8px 12px; font-size: 14px; }
+.balance div { padding: 2px 0; }
+.due { color: var(--danger); font-weight: 600; }
+.ok { color: var(--ok); font-weight: 600; }
+.card-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.empty { text-align: center; color: var(--muted); padding: 40px 0; }
+
+dialog { border: none; border-radius: 10px; padding: 20px; width: min(440px, 92vw); box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+dialog::backdrop { background: rgba(0,0,0,.4); }
+dialog h2 { margin-top: 0; }
+dialog label { display: block; margin-bottom: 12px; font-size: 14px; color: var(--muted); }
+dialog input, dialog select { display: block; width: 100%; margin-top: 4px; padding: 7px 8px; font: inherit; color: var(--text); border: 1px solid var(--border); border-radius: 6px; }
+dialog .row { display: flex; gap: 12px; }
+dialog .row label { flex: 1; }
+#vehicle-list { margin-bottom: 12px; }
+.vehicle { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.vehicle .btns { display: flex; gap: 6px; }
+#form-vehicle { border-top: 2px solid var(--border); padding-top: 4px; }
+#form-vehicle h3 { margin: 10px 0; font-size: 1rem; }
+dialog menu { display: flex; justify-content: flex-end; gap: 8px; padding: 0; margin: 8px 0 0; }
